@@ -1,5 +1,13 @@
-# Front End for GCoin interface
+# Gcoin App
 
-This will link to GCoin project as backend to support user that exchange GCoin on metamask
+App for interacting with the Cogito Protocol.
 
-In addtion, it will show treasury value, total GCoin circulation value, GCoin value with time.
+## Development
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
