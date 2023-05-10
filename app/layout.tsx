@@ -1,6 +1,7 @@
+import classNames from "classnames";
 import { Cousine, Rubik } from "next/font/google";
-import { Footer } from "./Footer";
-import Nav from "./Nav";
+import { Footer } from "../components/Footer";
+import Nav from "../components/nav/Nav";
 import "./globals.css";
 
 const rubik = Rubik({ subsets: ["latin"] });
@@ -18,7 +19,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={rubik.className}>
+      <body
+        className={classNames(
+          rubik.className,
+          "bg-zinc-100 dark:bg-zinc-950 text-black dark:text-gray-100"
+        )}
+      >
         <div className="flex flex-col items-center">
           <main className="flex flex-col min-h-screen w-full sm:max-w-screen-xl sm:p-4 xl:p-8">
             <Nav />

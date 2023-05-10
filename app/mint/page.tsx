@@ -20,8 +20,8 @@ export default function MintPage() {
 
   return (
     <>
-      <form className="bg-gradient-to-bl from-violet-800 via-purple-900 to-purple-950 bg-opacity-10 rounded-lg p-8 w-full max-w-md flex flex-col items-center gap-4 font-monospace text-xl">
-        <h1 className="w-full text-3xl text-white">Mint GCOIN</h1>
+      <form className="bg-gradient-to-bl from-violet-800 via-purple-900 to-purple-950 bg-opacity-10 rounded-lg p-8 w-full max-w-md flex flex-col items-center gap-4 font-monospace text-xl text-white">
+        <h1 className="w-full text-3xl">Mint GCOIN</h1>
 
         <div className="w-full rounded-md bg-black bg-opacity-50 p-4 flex flex-col gap-2 focus-within:outline-purple-400 focus-within:outline focus-within:outline-2">
           <div className="flex justify-between text-sm">
@@ -49,7 +49,7 @@ export default function MintPage() {
               autoComplete="off"
             />
 
-            <label className="">USDC</label>
+            <label className="text-white">USDC</label>
           </div>
         </div>
 
@@ -73,7 +73,7 @@ export default function MintPage() {
               autoComplete="off"
             />
 
-            <label className="">GCOIN</label>
+            <label className="text-white">GCOIN</label>
           </div>
         </div>
 

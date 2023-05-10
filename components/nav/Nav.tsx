@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import ActiveLink from "./ActiveLink";
+import ActiveLink from "../common/ActiveLink";
+import Dropdown from "./Dropdown";
+import { NAV_LINKS } from "./links";
 
 export default function Nav() {
   return (
-    <nav className="sm:p-4 flex flex-col sm:flex-row sm:justify-between sm:gap-8">
+    <nav className="pt-2 sm:p-4 sm:flex sm:flex-row sm:justify-between sm:gap-8">
       <div className="flex flex-col sm:flex-row sm:justify-between">
-        <div className="flex-none p-2">
+        <div className="flex-none px-2">
           <Link href="/">
             <Image
               src="/logo-light.svg"
@@ -30,14 +32,15 @@ export default function Nav() {
         </div>
       </div>
 
-      <ul className="flex flex-1 items-center bg-zinc-900 sm:bg-transparent p-4 gap-4">
-        <li>
-          <ActiveLink href="/mint">Mint</ActiveLink>
-        </li>
-        {/* <li>
-          <ActiveLink href="/stats">Stats</ActiveLink>
-        </li> */}
+      <ul className="hidden sm:flex flex-1 items-center dark:bg-zinc-900 sm:dark:bg-transparent p-4 gap-4 dark:text-gray-50">
+        {NAV_LINKS.map(({ label, href }) => (
+          <li>
+            <ActiveLink href={href}>{label}</ActiveLink>
+          </li>
+        ))}
       </ul>
+
+      <Dropdown />
     </nav>
   );
 }
