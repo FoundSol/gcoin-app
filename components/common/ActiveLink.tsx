@@ -9,7 +9,7 @@ export default function ActiveLink({
   children,
   href,
   className = "",
-  activeClassName = "font-bold cursor-default underline underline-offset-8",
+  activeClassName = "font-bold cursor-default",
 }: {
   children: React.ReactNode;
   href: string;

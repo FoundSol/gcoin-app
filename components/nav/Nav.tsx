@@ -32,7 +32,7 @@ export default function Nav() {
         </div>
       </div>
 
-      <ul className="hidden sm:flex flex-1 items-center dark:bg-zinc-900 sm:dark:bg-transparent p-4 gap-4 dark:text-gray-50">
+      <ul className="hidden sm:flex items-center dark:bg-zinc-900 sm:dark:bg-transparent p-4 gap-8 dark:text-gray-50">
         {NAV_LINKS.map(({ label, href }) => (
           <li>
             <ActiveLink href={href}>{label}</ActiveLink>
