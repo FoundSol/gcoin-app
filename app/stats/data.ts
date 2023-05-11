@@ -4,9 +4,18 @@ export const usePricesForAsset = (asset: string) => {
     { name: "ETH", price: 1800 },
     { name: "BTC", price: 28000 },
     { name: "AGIX", price: 0.25 },
+    { name: "GCOIN", price: 1.0152 },
   ];
   const item = data.find(({ name }) => name === asset);
   return item?.price ?? 0;
+};
+
+export const useGcoinSupply = () => {
+  return 1_500_000;
+};
+
+export const useCAR = () => {
+  return 125;
 };
 
 export const useTreasuryData = () => {
