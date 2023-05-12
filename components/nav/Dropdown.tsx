@@ -1,12 +1,9 @@
-"use client";
-
 import useDarkMode from "@fisch0920/use-dark-mode";
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";
 import Link from "next/link";
-import { Fragment, MouseEventHandler, useState } from "react";
+import { Fragment, MouseEventHandler } from "react";
 import { FiMenu } from "react-icons/fi";
-import { IoWalletOutline } from "react-icons/io5";
 import { NAV_LINKS } from "./links";
 
 export default function Dropdown() {
@@ -15,7 +12,6 @@ export default function Dropdown() {
     classNameLight: "light",
     element: document.documentElement,
   });
-  const [account, setAccount] = useState("");
 
   const handleToggleDarkMode: MouseEventHandler = (e) => {
     e.preventDefault();
@@ -27,7 +23,6 @@ export default function Dropdown() {
       <Menu as="div" className="sm:relative">
         <div className="text-right">
           <Menu.Button className="inline-flex justify-center items-center p-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 text-xl">
-            {!!account && <span className="mr-2">User {account}</span>}
             <FiMenu />
           </Menu.Button>
         </div>
@@ -41,9 +36,7 @@ export default function Dropdown() {
           leaveTo="transform opacity-0 scale-95"
         >
           <Menu.Items
-            className="sm:absolute sm:right-0 w-full sm:w-64 mt-2 origin-top-right
-sm:rounded-md dark:text-white
-          border-y sm:border border-black dark:border-white border-opacity-10 dark:border-opacity-10 bg-zinc-200 sm:bg-white shadow-inner sm:shadow-lg dark:bg-zinc-900 bg-opacity-80 dark:bg-opacity-70 backdrop-blur backdrop-filter
+            className="sm:absolute sm:right-0 w-full sm:w-64 mt-2 origin-top-right sm:rounded-md dark:text-white border-y sm:border border-black dark:border-white border-opacity-10 dark:border-opacity-10 bg-zinc-200 sm:bg-white shadow-inner sm:shadow-lg dark:bg-zinc-900 bg-opacity-70 backdrop-blur backdrop-filter
           "
           >
             <div className="py-1">
@@ -51,7 +44,7 @@ sm:rounded-md dark:text-white
                 {NAV_LINKS.map(({ label, href, Logo }) => (
                   <Menu.Item key={href}>
                     <Link
-                      className="ui-active:bg-violet-500 ui-active:text-white p-3 group flex w-full items-center"
+                      className="p-3 group flex w-full items-center bg-black bg-opacity-0 ui-active:bg-opacity-5 dark:bg-white dark:bg-opacity-0 dark:ui-active:bg-opacity-5 transition-opacity"
                       href={href}
                     >
                       <div className="w-10 mr-4 pl-2">
@@ -64,7 +57,7 @@ sm:rounded-md dark:text-white
               </div>
               <Menu.Item
                 as="button"
-                className="ui-active:bg-violet-500 ui-active:text-white p-3 group flex w-full items-center"
+                className="p-3 group flex w-full items-center bg-black bg-opacity-0 ui-active:bg-opacity-5 dark:bg-white dark:bg-opacity-0 dark:ui-active:bg-opacity-5 transition-opacity"
                 onClick={handleToggleDarkMode}
               >
                 <div
@@ -89,15 +82,6 @@ sm:rounded-md dark:text-white
                   </span>
                 </div>
                 <span>Dark Mode</span>
-              </Menu.Item>
-              <Menu.Item
-                as="button"
-                className="ui-active:bg-violet-500 ui-active:text-white p-3 group flex w-full items-center"
-              >
-                <div className="w-10 mr-4 pl-2">
-                  <IoWalletOutline />
-                </div>
-                {account ? "Disconnect" : "Connect Wallet"}
               </Menu.Item>
             </div>
           </Menu.Items>

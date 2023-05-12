@@ -1,6 +1,7 @@
-import { IoIosSwap } from "react-icons/io";
+import { FaRegChartBar } from "react-icons/fa";
+import { VscArrowSwap } from "react-icons/vsc";
 
 export const NAV_LINKS = [
-  { label: "Mint", href: "/mint", Logo: IoIosSwap },
-  { label: "Stats", href: "/stats", Logo: IoIosSwap },
+  { label: "Mint", href: "/mint", Logo: VscArrowSwap },
+  { label: "Stats", href: "/stats", Logo: FaRegChartBar },
 ];

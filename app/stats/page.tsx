@@ -14,13 +14,13 @@ export default function StatsPage() {
         <TreasuryStatsTable />
       </Section>
 
-      <Section className="col-span-2">
+      <Section className="col-span-5 lg:col-span-2">
         <h1 className="w-full text-3xl">Treasury</h1>
 
         <TreasuryReservesChart />
       </Section>
 
-      <Section className="col-span-3">
+      <Section className="col-span-5 lg:col-span-3">
         <h1 className="w-full text-3xl">Liquid Reserves</h1>
 
         <TreasuryReservesTable />
