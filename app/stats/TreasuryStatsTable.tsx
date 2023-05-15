@@ -1,10 +1,12 @@
 import { formatNumberUSD } from "@/lib/numbers";
-import { useCAR, useGcoinSupply, usePricesForAsset } from "./data";
+import { useGCoinGcoinValue, useGCoinTotalSupply } from "@/lib/wagmiHooks";
+import { useCAR } from "./data";
 
 export default function TreasuryStatsTable() {
-  const gcoinUsd = usePricesForAsset("GCOIN");
-  const gcoinSupply = useGcoinSupply();
-  const gcoinMarketCap = gcoinSupply * gcoinUsd;
+  const gcoinValue = useGCoinGcoinValue();
+  const gcoinSupply = useGCoinTotalSupply();
+  const gcoinUsd = Number(gcoinValue?.data ?? 0) / 1e18;
+  const gcoinMarketCap = Number(gcoinSupply?.data ?? BigInt(0)) * gcoinUsd;
   const car = useCAR();
 
   return (
@@ -12,7 +14,7 @@ export default function TreasuryStatsTable() {
       <tbody>
         <tr>
           <td>Current Price</td>
-          <td className="text-right">{formatNumberUSD(Number(gcoinUsd), 4)}</td>
+          <td className="text-right">{formatNumberUSD(gcoinUsd, 4)}</td>
         </tr>
         <tr>
           <td>Market Cap</td>

@@ -30,5 +30,8 @@
     "typescript": "5.0.4",
     "viem": "^0.3.21",
     "wagmi": "^1.0.2"
+  },
+  "devDependencies": {
+    "@wagmi/cli": "^1.0.1"
   }
 }
