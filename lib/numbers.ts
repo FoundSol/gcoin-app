@@ -11,8 +11,8 @@ export const formatNumber = (
   number: any,
   opts?: { digits?: number; decimals?: number }
 ) => {
-  opts = opts ?? { decimals: 1 };
-  opts.decimals = opts.decimals ?? 1;
+  opts = opts ?? { decimals: 0 };
+  opts.decimals = opts.decimals ?? 0;
 
   let n = number;
   if (typeof number !== "number") {

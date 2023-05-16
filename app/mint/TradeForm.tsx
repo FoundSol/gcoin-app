@@ -7,6 +7,8 @@ import {
   gCoinAddress,
   useErc20BalanceOf,
   useErc20Symbol,
+  useGCoinGetGCoinValue,
+  useGCoinMintingFee,
 } from "@/lib/wagmiHooks";
 import {
   useAddRecentTransaction,
@@ -141,6 +143,9 @@ export default function TradeForm() {
       console.warn(`getGCoinOutputFromStable`, err);
     }
   };
+
+  const gcoinValueResult = useGCoinGetGCoinValue();
+  const mintingFeeResult = useGCoinMintingFee();
 
   // Validate form when input is changed
   useEffect(() => {
@@ -324,6 +329,31 @@ export default function TradeForm() {
             "Connect Wallet"
           )}
         </button>
+
+        <div className="w-full">
+          <div className="flex justify-between text-sm text-zinc-300">
+            <div>Rate</div>
+            <div>
+              {gcoinValueResult.data != null ? (
+                `1 GCOIN = ${Number(gcoinValueResult.data) / 1e18} ${
+                  inputSymbolResult.data
+                }`
+              ) : (
+                <EmptyBalance />
+              )}
+            </div>
+          </div>
+          <div className="flex justify-between text-sm text-zinc-300">
+            <div>Minting Fee</div>
+            <div>
+              {mintingFeeResult.data != null ? (
+                `${Number(mintingFeeResult.data).toFixed(2)}%`
+              ) : (
+                <EmptyBalance />
+              )}
+            </div>
+          </div>
+        </div>
       </form>
     </Section>
   );
