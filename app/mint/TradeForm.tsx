@@ -9,6 +9,7 @@ import {
   useErc20Symbol,
   useGCoinGetGCoinValue,
   useGCoinMintingFee,
+  useGCoinPaused,
 } from "@/lib/wagmiHooks";
 import {
   useAddRecentTransaction,
@@ -143,6 +144,14 @@ export default function TradeForm() {
       console.warn(`getGCoinOutputFromStable`, err);
     }
   };
+
+  // Disable form if paused
+  const gcoinPausedResult = useGCoinPaused();
+  useEffect(() => {
+    if (gcoinPausedResult.data) {
+      setFormState(FormState.DISABLED);
+    }
+  }, [gcoinPausedResult.data]);
 
   const gcoinValueResult = useGCoinGetGCoinValue();
   const mintingFeeResult = useGCoinMintingFee();
@@ -315,7 +324,9 @@ export default function TradeForm() {
           )}
           disabled={formState !== FormState.READY}
         >
-          {formState === FormState.LOADING ? (
+          {gcoinPausedResult.data === true ? (
+            "Minting Unavailable"
+          ) : formState === FormState.LOADING ? (
             <span className="flex items-center gap-2 justify-center">
               <CgSpinner className="animate-spin" /> Submitting...
             </span>
