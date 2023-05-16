@@ -134,7 +134,9 @@ export default function TradeForm() {
         args: [inputAddress, value],
       });
       setOutputValue(String(Number(output) / 1e18));
-      setFormState(FormState.READY);
+      if (inputBalanceResult.data != null && value <= inputBalanceResult.data) {
+        setFormState(FormState.READY);
+      }
     } catch (err) {
       console.warn(`getGCoinOutputFromStable`, err);
     }
