@@ -6,7 +6,8 @@ export default function TreasuryStatsTable() {
   const gcoinValue = useGCoinGcoinValue();
   const gcoinSupply = useGCoinTotalSupply();
   const gcoinUsd = Number(gcoinValue?.data ?? 0) / 1e18;
-  const gcoinMarketCap = Number(gcoinSupply?.data ?? BigInt(0)) * gcoinUsd;
+  const gcoinMarketCap =
+    (Number(gcoinSupply?.data ?? BigInt(0)) / 1e18) * gcoinUsd;
   const car = useCAR();
 
   return (

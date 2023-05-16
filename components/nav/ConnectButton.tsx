@@ -1,5 +1,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import classNames from "classnames";
+import { CgSpinner } from "react-icons/cg";
 
 export default function MyConnectButton() {
   return (
@@ -55,7 +56,10 @@ export default function MyConnectButton() {
                 );
               }
               return (
-                <div className="flex outline outline-zinc-200 dark:outline-zinc-900 shadow-md dark:shadow-none dark:text-white rounded-md">
+                <div className="flex items-center outline outline-zinc-200 dark:outline-zinc-900 shadow-md dark:shadow-none dark:text-white rounded-md">
+                  {account.hasPendingTransactions && (
+                    <CgSpinner className="animate-spin text-zinc-500" />
+                  )}
                   <button
                     type="button"
                     onClick={openChainModal}

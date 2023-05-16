@@ -7,7 +7,7 @@ import { WagmiConfig } from "wagmi";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains} coolMode>
+      <RainbowKitProvider chains={chains} coolMode showRecentTransactions>
         {children}
       </RainbowKitProvider>
     </WagmiConfig>
