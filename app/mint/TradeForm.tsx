@@ -90,6 +90,20 @@ export default function TradeForm() {
     address: inputAddress,
   });
 
+  // Parameters for display
+  const gcoinValueResult = useGCoinGetGCoinValue();
+  const mintingFeeResult = useGCoinMintingFee();
+
+  const [formState, setFormState] = useState(FormState.DISABLED);
+  useEffect(() => {
+    if (userAccount.isDisconnected) {
+      setFormState(FormState.DISABLED);
+    } else {
+      validateInput();
+    }
+  }, [userAccount.status]);
+
+  // User balances
   const inputBalanceResult = useErc20BalanceOf(
     !!userAccount.address
       ? {
@@ -158,11 +172,8 @@ export default function TradeForm() {
     }
   }, [gcoinPausedResult.data]);
 
-  const gcoinValueResult = useGCoinGetGCoinValue();
-  const mintingFeeResult = useGCoinMintingFee();
-
   // Validate form when input is changed
-  useEffect(() => {
+  const validateInput = () => {
     if (userAccount.isConnected && !inputValue) {
       setFormState(FormState.DISABLED);
       setOutputValue("");
@@ -170,7 +181,7 @@ export default function TradeForm() {
     }
 
     const value = BigInt(Number(inputValue) * 1e18);
-    if (value < 0) {
+    if (value <= 0) {
       setFormState(FormState.DISABLED);
       return;
     }
@@ -183,12 +194,12 @@ export default function TradeForm() {
     }
 
     checkAllowance();
-  }, [inputValue]);
+  };
+  useEffect(validateInput, [inputValue]);
 
   // Form submission
   const { openConnectModal } = useConnectModal();
   const addRecentTransaction = useAddRecentTransaction();
-  const [formState, setFormState] = useState(FormState.READY);
   const onSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
 
