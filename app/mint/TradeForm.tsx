@@ -1,4 +1,5 @@
 "use client";
+
 import Section from "@/components/common/Section";
 import { formatNumber } from "@/lib/numbers";
 import { getContractAddresses } from "@/lib/wagmi";
@@ -17,15 +18,19 @@ import {
 } from "@rainbow-me/rainbowkit";
 import {
   erc20ABI,
+  getWalletClient,
   readContract,
   waitForTransaction,
   writeContract,
 } from "@wagmi/core";
 import classNames from "classnames";
+import Image from "next/image";
 import { FormEventHandler, useEffect, useState } from "react";
-import { BsArrowDown } from "react-icons/bs";
+import { BsArrowDown, BsWallet2 } from "react-icons/bs";
 import { CgSpinner } from "react-icons/cg";
 import { useAccount } from "wagmi";
+import gcoinSvg from "../img/gcoin.svg";
+import usdcSvg from "../img/usdc.svg";
 
 enum FormState {
   READY,
@@ -253,6 +258,19 @@ export default function TradeForm() {
     setFormState(FormState.READY);
   };
 
+  // Add token to wallet
+  const handleAddAsset = async () => {
+    const walletClient = await getWalletClient();
+    walletClient?.watchAsset({
+      type: "ERC20",
+      options: {
+        address: outputAddress,
+        symbol: "GCOIN",
+        decimals: 18,
+      },
+    });
+  };
+
   return (
     <Section className="w-full max-w-md mb-8">
       <form
@@ -282,7 +300,8 @@ export default function TradeForm() {
               autoComplete="off"
             />
 
-            <label className="text-white">{inputSymbolResult?.data}</label>
+            <Image alt="USDC" src={usdcSvg} width={24} height={24} />
+            <label className="ml-2 text-white">{inputSymbolResult?.data}</label>
           </div>
         </div>
 
@@ -295,7 +314,7 @@ export default function TradeForm() {
             <ClickableBalanceLabel value={outputBalanceResult.data} />
           </div>
 
-          <div className="flex text-2xl">
+          <div className="flex text-2xl items-center">
             <input
               type="number"
               placeholder="0"
@@ -306,7 +325,8 @@ export default function TradeForm() {
               autoComplete="off"
             />
 
-            <label className="text-white">GCOIN</label>
+            <Image alt="GCOIN" src={gcoinSvg} width={24} height={24} />
+            <label className="ml-2 text-white">GCOIN</label>
           </div>
         </div>
 
@@ -341,8 +361,8 @@ export default function TradeForm() {
           )}
         </button>
 
-        <div className="w-full">
-          <div className="flex justify-between text-sm text-zinc-300">
+        <div className="w-full text-zinc-300 text-sm">
+          <div className="flex justify-between">
             <div>Rate</div>
             <div>
               {gcoinValueResult.data != null ? (
@@ -354,7 +374,7 @@ export default function TradeForm() {
               )}
             </div>
           </div>
-          <div className="flex justify-between text-sm text-zinc-300">
+          <div className="flex justify-between">
             <div>Minting Fee</div>
             <div>
               {mintingFeeResult.data != null ? (
@@ -364,6 +384,17 @@ export default function TradeForm() {
               )}
             </div>
           </div>
+          {userAccount.isConnected && (
+            <div className="text-right">
+              <div
+                className="inline-flex items-center gap-2 cursor-pointer hover:underline"
+                onClick={handleAddAsset}
+              >
+                <BsWallet2 />
+                Add GCOIN to Wallet
+              </div>
+            </div>
+          )}
         </div>
       </form>
     </Section>
