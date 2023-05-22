@@ -1,15 +1,11 @@
 "use client";
 
-import Section from "@/components/common/Section";
-import { formatNumber } from "@/lib/numbers";
 import { getContractAddresses } from "@/lib/wagmi";
 import {
   gCoinABI,
   gCoinAddress,
   useErc20BalanceOf,
   useErc20Symbol,
-  useGCoinGetGCoinValue,
-  useGCoinMintingFee,
   useGCoinPaused,
 } from "@/lib/wagmiHooks";
 import {
@@ -18,7 +14,6 @@ import {
 } from "@rainbow-me/rainbowkit";
 import {
   erc20ABI,
-  getWalletClient,
   readContract,
   waitForTransaction,
   writeContract,
@@ -26,57 +21,18 @@ import {
 import classNames from "classnames";
 import Image from "next/image";
 import { FormEventHandler, useEffect, useState } from "react";
-import { BsArrowDown, BsWallet2 } from "react-icons/bs";
+import { BsArrowDown } from "react-icons/bs";
 import { CgSpinner } from "react-icons/cg";
 import { useAccount } from "wagmi";
 import gcoinSvg from "../img/gcoin.svg";
 import usdcSvg from "../img/usdc.svg";
+import ClickableBalanceLabel from "./ClickableBalanceLabel";
 
 enum FormState {
   READY,
   LOADING,
   DISABLED,
 }
-
-const EmptyBalance = () => (
-  <span className="text-gray-400 opacity-50">&mdash;</span>
-);
-
-const ClickableBalanceLabel = ({
-  value,
-  onClick,
-}: {
-  value?: BigInt;
-  onClick?: () => void;
-}) => {
-  const handleClick = () => {
-    if (onClick != null) onClick();
-  };
-
-  return value != null ? (
-    <span className="inline-flex gap-2">
-      <a
-        className={classNames(
-          { "cursor-pointer": onClick != null },
-          "text-purple-300"
-        )}
-        onClick={handleClick}
-      >
-        {formatNumber(value, { decimals: 18 })}
-      </a>
-      {onClick != undefined && (
-        <a
-          className="cursor-pointer hover:underline text-amber-300"
-          onClick={handleClick}
-        >
-          Max
-        </a>
-      )}
-    </span>
-  ) : (
-    <EmptyBalance />
-  );
-};
 
 export default function TradeForm() {
   const userAccount = useAccount();
@@ -90,10 +46,6 @@ export default function TradeForm() {
     address: inputAddress,
   });
 
-  // Parameters for display
-  const gcoinValueResult = useGCoinGetGCoinValue();
-  const mintingFeeResult = useGCoinMintingFee();
-
   const [formState, setFormState] = useState(FormState.DISABLED);
   useEffect(() => {
     if (userAccount.isDisconnected) {
@@ -101,7 +53,7 @@ export default function TradeForm() {
     } else {
       validateInput();
     }
-  }, [userAccount.status]);
+  }, [userAccount.isDisconnected]);
 
   // User balances
   const inputBalanceResult = useErc20BalanceOf(
@@ -269,145 +221,92 @@ export default function TradeForm() {
     setFormState(FormState.READY);
   };
 
-  // Add token to wallet
-  const handleAddAsset = async () => {
-    const walletClient = await getWalletClient();
-    walletClient?.watchAsset({
-      type: "ERC20",
-      options: {
-        address: outputAddress,
-        symbol: "GCOIN",
-        decimals: 18,
-      },
-    });
-  };
-
   return (
-    <Section className="w-full max-w-md mb-8">
-      <form
-        className="w-full flex flex-col items-center gap-4"
-        onSubmit={onSubmit}
+    <form
+      className="w-full flex flex-col items-center gap-4"
+      onSubmit={onSubmit}
+    >
+      <div className="w-full rounded-md bg-black bg-opacity-50 p-4 flex flex-col gap-2 focus-within:outline-purple-400 focus-within:outline focus-within:outline-2">
+        <div className="flex justify-between text-sm">
+          <label className="text-gray-400">Balance</label>
+
+          <ClickableBalanceLabel
+            onClick={setToMax}
+            value={inputBalanceResult.data}
+          />
+        </div>
+
+        <div className="flex text-2xl">
+          <input
+            type="number"
+            placeholder="0"
+            className="bg-transparent w-full focus:outline-none"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            maxLength={40}
+            autoComplete="off"
+          />
+
+          <Image alt="USDC" src={usdcSvg} width={24} height={24} />
+          <label className="ml-2 text-white">{inputSymbolResult?.data}</label>
+        </div>
+      </div>
+
+      <BsArrowDown />
+
+      <div className="w-full rounded-md bg-black bg-opacity-50 p-4 flex flex-col gap-2 focus-within:outline-purple-400 focus-within:outline focus-within:outline-2">
+        <div className="flex justify-between text-sm">
+          <label className="text-gray-400">Balance</label>
+
+          <ClickableBalanceLabel value={outputBalanceResult.data} />
+        </div>
+
+        <div className="flex text-2xl items-center">
+          <input
+            type="number"
+            placeholder="0"
+            className="bg-transparent w-full focus:outline-none"
+            value={outputValue}
+            onChange={(e) => setOutputValue(e.target.value)}
+            maxLength={40}
+            autoComplete="off"
+          />
+
+          <Image alt="GCOIN" src={gcoinSvg} width={24} height={24} />
+          <label className="ml-2 text-white">GCOIN</label>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className={classNames(
+          {
+            "cursor-progress": formState === FormState.LOADING,
+            "cursor-not-allowed": formState === FormState.DISABLED,
+            "text-gray-400": formState !== FormState.READY,
+            "cursor-pointer text-white hover:bg-purple-600":
+              formState === FormState.READY,
+          },
+          "mt-4 rounded-md w-full p-4 bg-purple-500 bg-opacity-50 focus:outline-none transition-colors"
+        )}
+        disabled={formState !== FormState.READY}
       >
-        <h1 className="w-full text-3xl">Mint GCOIN</h1>
-
-        <div className="w-full rounded-md bg-black bg-opacity-50 p-4 flex flex-col gap-2 focus-within:outline-purple-400 focus-within:outline focus-within:outline-2">
-          <div className="flex justify-between text-sm">
-            <label className="text-gray-400">Your Balance</label>
-
-            <ClickableBalanceLabel
-              onClick={setToMax}
-              value={inputBalanceResult.data}
-            />
-          </div>
-
-          <div className="flex text-2xl">
-            <input
-              type="number"
-              placeholder="0"
-              className="bg-transparent w-full focus:outline-none"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              maxLength={40}
-              autoComplete="off"
-            />
-
-            <Image alt="USDC" src={usdcSvg} width={24} height={24} />
-            <label className="ml-2 text-white">{inputSymbolResult?.data}</label>
-          </div>
-        </div>
-
-        <BsArrowDown />
-
-        <div className="w-full rounded-md bg-black bg-opacity-50 p-4 flex flex-col gap-2 focus-within:outline-purple-400 focus-within:outline focus-within:outline-2">
-          <div className="flex justify-between text-sm">
-            <label className="text-gray-400">GCOIN Balance</label>
-
-            <ClickableBalanceLabel value={outputBalanceResult.data} />
-          </div>
-
-          <div className="flex text-2xl items-center">
-            <input
-              type="number"
-              placeholder="0"
-              className="bg-transparent w-full focus:outline-none"
-              value={outputValue}
-              onChange={(e) => setOutputValue(e.target.value)}
-              maxLength={40}
-              autoComplete="off"
-            />
-
-            <Image alt="GCOIN" src={gcoinSvg} width={24} height={24} />
-            <label className="ml-2 text-white">GCOIN</label>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className={classNames(
-            {
-              "cursor-progress": formState === FormState.LOADING,
-              "cursor-not-allowed": formState === FormState.DISABLED,
-              "text-gray-400": formState !== FormState.READY,
-              "cursor-pointer text-white hover:bg-purple-600":
-                formState === FormState.READY,
-            },
-            "mt-4 rounded-md w-full p-4 bg-purple-500 bg-opacity-50 focus:outline-none transition-colors"
-          )}
-          disabled={formState !== FormState.READY}
-        >
-          {gcoinPausedResult.data === true ? (
-            "Minting Unavailable"
-          ) : formState === FormState.LOADING ? (
-            <span className="flex items-center gap-2 justify-center">
-              <CgSpinner className="animate-spin" /> Submitting...
-            </span>
-          ) : userAccount.isConnected ? (
-            needsAllowance ? (
-              `Approve ${inputSymbolResult?.data}`
-            ) : (
-              "Swap"
-            )
+        {gcoinPausedResult.data === true ? (
+          "Minting Unavailable"
+        ) : formState === FormState.LOADING ? (
+          <span className="flex items-center gap-2 justify-center">
+            <CgSpinner className="animate-spin" /> Submitting...
+          </span>
+        ) : userAccount.isConnected ? (
+          needsAllowance ? (
+            `Approve ${inputSymbolResult?.data}`
           ) : (
-            "Connect Wallet"
-          )}
-        </button>
-
-        <div className="w-full text-zinc-300 text-sm">
-          <div className="flex justify-between">
-            <div>Rate</div>
-            <div>
-              {gcoinValueResult.data != null ? (
-                `1 GCOIN = ${Number(gcoinValueResult.data) / 1e18} ${
-                  inputSymbolResult.data
-                }`
-              ) : (
-                <EmptyBalance />
-              )}
-            </div>
-          </div>
-          <div className="flex justify-between">
-            <div>Minting Fee</div>
-            <div>
-              {mintingFeeResult.data != null ? (
-                `${Number(mintingFeeResult.data).toFixed(2)}%`
-              ) : (
-                <EmptyBalance />
-              )}
-            </div>
-          </div>
-          {userAccount.isConnected && (
-            <div className="text-right">
-              <div
-                className="inline-flex items-center gap-2 cursor-pointer hover:underline"
-                onClick={handleAddAsset}
-              >
-                <BsWallet2 />
-                Add GCOIN to Wallet
-              </div>
-            </div>
-          )}
-        </div>
-      </form>
-    </Section>
+            "Swap"
+          )
+        ) : (
+          "Connect Wallet"
+        )}
+      </button>
+    </form>
   );
 }

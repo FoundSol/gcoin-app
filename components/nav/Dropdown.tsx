@@ -10,7 +10,6 @@ export default function Dropdown() {
   const darkMode = useDarkMode(undefined, {
     classNameDark: "dark",
     classNameLight: "light",
-    element: document.documentElement,
   });
 
   const handleToggleDarkMode: MouseEventHandler = (e) => {

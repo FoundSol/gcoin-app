@@ -1,3 +1,5 @@
+"use client";
+
 import { formatNumberUSD } from "@/lib/numbers";
 import { useState } from "react";
 import {

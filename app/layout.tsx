@@ -21,14 +21,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body
-        className={classNames(
-          rubik.className,
-          "bg-zinc-100 dark:bg-zinc-950 text-black dark:text-gray-100"
-        )}
-      >
+      <body suppressHydrationWarning>
+        <script src="/noflash.js" />
         <Providers>
-          <div className="flex flex-col items-center">
+          <div
+            className={classNames(
+              rubik.className,
+              "flex flex-col items-center bg-zinc-100 dark:bg-zinc-950 text-black dark:text-gray-100"
+            )}
+          >
             <main className="flex flex-col min-h-screen w-full sm:max-w-screen-xl sm:p-4 xl:p-8">
               <Nav />
 

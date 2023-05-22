@@ -1,4 +1,4 @@
-export const usePricesForAsset = (asset: string) => {
+export const getPricesForAsset = (asset: string) => {
   const data = [
     { name: "USDC", price: 1 },
     { name: "ETH", price: 1800 },
@@ -27,7 +27,7 @@ export const useTreasuryData = () => {
   ];
   const withUsd = data.map((d) => ({
     ...d,
-    usd: d.qty * usePricesForAsset(d.name),
+    usd: d.qty * getPricesForAsset(d.name),
   }));
   const sum = withUsd.reduce((s, { usd }) => s + usd, 0);
   return { sum, items: withUsd.map((d) => ({ ...d, percent: d.usd / sum })) };

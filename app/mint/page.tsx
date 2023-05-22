@@ -1,8 +1,6 @@
-"use client";
-
 import Section from "@/components/common/Section";
 import TreasuryStatsTable from "../stats/TreasuryStatsTable";
-import TradeForm from "./TradeForm";
+import TradeSection from "./TradeSection";
 
 export default function MintPage() {
   return (
@@ -13,7 +11,7 @@ export default function MintPage() {
         <TreasuryStatsTable />
       </Section>
 
-      <TradeForm />
+      <TradeSection />
     </>
   );
 }

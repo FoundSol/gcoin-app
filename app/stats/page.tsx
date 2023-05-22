@@ -1,5 +1,4 @@
-"use client";
-
+import ClientOnly from "@/components/common/ClientOnly";
 import Section from "@/components/common/Section";
 import TreasuryReservesChart from "./TreasuryReservesChart";
 import TreasuryReservesTable from "./TreasuryReservesTable";
@@ -17,13 +16,17 @@ export default function StatsPage() {
       <Section className="col-span-5 lg:col-span-2">
         <h1 className="w-full text-3xl">Treasury</h1>
 
-        <TreasuryReservesChart />
+        <ClientOnly>
+          <TreasuryReservesChart />
+        </ClientOnly>
       </Section>
 
       <Section className="col-span-5 lg:col-span-3">
         <h1 className="w-full text-3xl">Liquid Reserves</h1>
 
-        <TreasuryReservesTable />
+        <ClientOnly>
+          <TreasuryReservesTable />
+        </ClientOnly>
       </Section>
     </div>
   );
