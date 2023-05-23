@@ -1,3 +1,5 @@
+"use client";
+
 import useDarkMode from "@fisch0920/use-dark-mode";
 import { Menu, Transition } from "@headlessui/react";
 import classNames from "classnames";

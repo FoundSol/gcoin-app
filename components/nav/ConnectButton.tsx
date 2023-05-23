@@ -1,3 +1,5 @@
+"use client";
+
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import classNames from "classnames";
 import { CgSpinner } from "react-icons/cg";

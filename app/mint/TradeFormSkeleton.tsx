@@ -1,5 +1,3 @@
-"use client";
-
 import EmptyText from "@/components/common/EmptyText";
 import Image from "next/image";
 import { BsArrowDown } from "react-icons/bs";
