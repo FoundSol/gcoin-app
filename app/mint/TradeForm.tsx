@@ -1,10 +1,12 @@
 "use client";
 
+import { GCOIN_DECIMALS, USDC_DECIMALS } from "@/lib/constants";
 import { getContractAddresses } from "@/lib/wagmi";
 import {
   gCoinABI,
   gCoinAddress,
   useErc20BalanceOf,
+  useErc20Decimals,
   useErc20Symbol,
   useGCoinPaused,
 } from "@/lib/wagmiHooks";
@@ -40,11 +42,19 @@ export default function TradeForm() {
   const [inputValue, setInputValue] = useState("");
   const [outputValue, setOutputValue] = useState("");
 
-  const inputAddress = getContractAddresses().Erc20PresetMinterPauser;
+  const inputAddress = getContractAddresses().Usdc;
   const outputAddress = getContractAddresses().GCoin;
   const inputSymbolResult = useErc20Symbol({
     address: inputAddress,
   });
+  const inputDecimalsResult = useErc20Decimals({
+    address: inputAddress,
+  });
+  const inputDenominator = Math.pow(
+    10,
+    inputDecimalsResult.data ?? USDC_DECIMALS
+  );
+  const outputDenominator = Math.pow(10, GCOIN_DECIMALS);
 
   const [formState, setFormState] = useState(FormState.DISABLED);
   useEffect(() => {
@@ -61,17 +71,19 @@ export default function TradeForm() {
       ? {
           address: inputAddress,
           args: [userAccount.address],
+          watch: true,
         }
       : undefined
   );
   const setToMax = () =>
-    setInputValue(String(Number(inputBalanceResult.data) / 1e18));
+    setInputValue(String(Number(inputBalanceResult.data) / inputDenominator));
 
   const outputBalanceResult = useErc20BalanceOf(
     !!userAccount.address
       ? {
           address: outputAddress,
           args: [userAccount.address],
+          watch: true,
         }
       : undefined
   );
@@ -83,7 +95,7 @@ export default function TradeForm() {
   };
 
   const checkAllowance = async () => {
-    const value = BigInt(Number(inputValue) * 1e18);
+    const value = BigInt(Number(inputValue) * inputDenominator);
     if (!!userAccount.address && !!value) {
       try {
         const allowance = await readContract({
@@ -107,7 +119,7 @@ export default function TradeForm() {
         functionName: "getGCoinOutputFromStable",
         args: [inputAddress, value],
       });
-      setOutputValue(String(Number(output) / 1e18));
+      setOutputValue(String(Number(output) / outputDenominator));
       if (inputBalanceResult.data != null && value <= inputBalanceResult.data) {
         setFormState(FormState.READY);
       }
@@ -132,7 +144,7 @@ export default function TradeForm() {
       return;
     }
 
-    const value = BigInt(Number(inputValue) * 1e18);
+    const value = BigInt(Number(inputValue) * inputDenominator);
     if (value <= 0) {
       setFormState(FormState.DISABLED);
       return;
@@ -167,7 +179,7 @@ export default function TradeForm() {
       return;
     }
 
-    const value = BigInt(Number(inputValue) * 1e18);
+    const value = BigInt(Number(inputValue) * inputDenominator);
     if (value < 0) return;
 
     setFormState(FormState.LOADING);
@@ -233,6 +245,7 @@ export default function TradeForm() {
           <ClickableBalanceLabel
             onClick={setToMax}
             value={inputBalanceResult.data}
+            decimals={inputDecimalsResult.data}
           />
         </div>
 

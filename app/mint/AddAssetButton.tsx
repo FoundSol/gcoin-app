@@ -1,6 +1,7 @@
 "use client";
 
 import ClientOnly from "@/components/common/ClientOnly";
+import { GCOIN_DECIMALS } from "@/lib/constants";
 import { getContractAddresses } from "@/lib/wagmi";
 import { getWalletClient } from "@wagmi/core";
 import { BsWallet2 } from "react-icons/bs";
@@ -22,7 +23,7 @@ export default function AddAssetButton() {
       options: {
         address: outputAddress,
         symbol: "GCOIN",
-        decimals: 18,
+        decimals: GCOIN_DECIMALS,
       },
     });
   };

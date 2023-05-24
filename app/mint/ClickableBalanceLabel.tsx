@@ -1,12 +1,15 @@
 import EmptyText from "@/components/common/EmptyText";
+import { GCOIN_DECIMALS } from "@/lib/constants";
 import { formatNumber } from "@/lib/numbers";
 import classNames from "classnames";
 
 export default function ClickableBalanceLabel({
   value,
+  decimals = GCOIN_DECIMALS,
   onClick,
 }: {
   value?: BigInt;
+  decimals?: number;
   onClick?: () => void;
 }) {
   const handleClick = () => {
@@ -22,7 +25,7 @@ export default function ClickableBalanceLabel({
         )}
         onClick={handleClick}
       >
-        {formatNumber(value, { decimals: 18 })}
+        {formatNumber(value, { decimals })}
       </a>
       {onClick != undefined && (
         <a
